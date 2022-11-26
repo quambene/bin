@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# Needed for '@(...)' pattern below
+shopt -s extglob
+
+dry_run=0
+pattern="*"
+
+for arg in "$@"
+do
+    if [[ $arg == "--dry-run" ]]; then
+        dry_run=1
+    else
+        pattern+="$arg*"
+    fi
+done
+
+printf "Searching for pattern: %s\n" "$pattern"
+
+local_branch=$( git branch --format='%(refname:short)' --list "*$pattern*" )
+remote_branch=$( git branch -r --format='%(refname:short)' --list "*$pattern*" )
+remote_repo=$( git remote show )
+
+# Remove the origin from remote branch name
+remote_branch_local="${remote_branch#@("$remote_repo/")}"
+    
+if [[ $local_branch == "" ]]; then
+    local_lines=0
+else
+    local_lines=$( echo "$local_branch" | wc -l )
+fi
+
+if [[ $remote_branch == "" ]]; then
+    remote_lines=0
+else
+    remote_lines=$( echo "$remote_branch" | wc -l )
+fi
+
+if [[ $dry_run == 1 ]]; then
+    printf "Dry run: \nlocal branches: %s\nlocal lines: %s\nremote branches: %s\nremote lines: %s\n" "$local_branch", "$local_lines", "$remote_branch", "$remote_lines"
+else
+    if (( local_lines == 1 )); then
+        git checkout "$local_branch"
+    elif (( local_lines == 0 && remote_lines == 1 )); then
+        git checkout --track "$remote_repo/$remote_branch_local"
+    elif (( local_lines > 1 )); then
+        printf "Found too many local branches: \n%s\n" "$local_branch"
+    elif (( remote_lines > 1 )); then
+        printf "Found too many remote branches: \n%s\n" "$remote_branch"
+    else
+        printf "Unexpected error: \nlocal branches: %s\nlocal lines: %s\nremote branches: %s\nremote lines: %s\n" "$local_branch", "$local_lines", "$remote_branch", "$remote_lines"
+    fi
+fi
