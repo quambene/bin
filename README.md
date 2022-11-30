@@ -87,7 +87,7 @@ git-checkout fix bug
 ## cargo-regression-test
 
 `cargo-regression-test` runs all integration tests which are behind feature flag
-"regression-test" on two branches. These tests may fail or not. It then compares
+"integration-test" on two branches. Some of these tests may fail. It then compares
 the test results and determines if any regression did occur.
 
 Run the script in your local project:
