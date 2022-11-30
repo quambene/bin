@@ -10,6 +10,7 @@ Utility bash scripts for `cargo`, `git`, etc.
 - [git-checkout](#git-checkout)
   - [Usage](#usage)
   - [Examples](#examples)
+- [cargo-regression-test](#cargo-regression-test)
 
 ## cargo-clean
 
@@ -81,4 +82,16 @@ git-checkout fix bug
 > Searching for pattern: *fix*bug*
 > Branch 'bug-386729-fix-terrible-bug' set up to track remote branch 'bug-386729-fix-terrible-bug' from 'origin'.
 > Switched to a new branch 'bug-386729-fix-terrible-bug'
+```
+
+## cargo-regression-test
+
+`cargo-regression-test` runs all integration tests which are behind feature flag
+"regression-test" on two branches. These tests may fail or not. It then compares
+the test results and determines if any regression did occur.
+
+Run the script in your local project:
+
+``` bash
+./cargo-regression-test
 ```

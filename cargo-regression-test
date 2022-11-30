@@ -1,0 +1,41 @@
+#!/bin/bash
+
+no_regression_counter=0
+branch1='dev'
+branch2='master'
+
+# Check out dev branch and run all tests
+git checkout $branch1
+
+printf "Running tests on branch %s\n" $branch1
+
+readarray -t dev_array < <(cargo test --test '*' --features integration-test)
+test_counter_string=${dev_array[1]}
+test_counter="$(echo "{$test_counter_string}" | sed 's/[^0-9]*//g')"
+dev_tests=("${dev_array[@]:2:$test_counter}")
+
+printf 'dev_tests: %s\n' "${dev_tests[@]}"
+
+# Check out master branch and run all tests
+git checkout $branch2
+
+printf "Running tests on branch %s\n" $branch2
+
+readarray -t master_array < <(cargo test --test '*' --features integration-test)
+master_tests=("${master_array[@]:2:$test_counter}")
+
+printf 'master_tests: %s\n' "${master_tests[@]}"
+
+# Compare test results
+for dev_test in "${dev_tests[@]}"
+do
+    for master_test in "${master_tests[@]}"
+    do
+        if [[ $dev_test != "" && $master_test != "" && $dev_test == "$master_test" ]]; then
+            ((no_regression_counter++))
+        fi
+    done
+done
+
+printf "number of tests: %s\n" "$test_counter"
+printf "number of regressions: %s\n" $(( test_counter - no_regression_counter))
