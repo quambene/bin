@@ -59,7 +59,6 @@ Run the script in your local Rust project:
 ./cargo-regression
 ```
 
-
 ## git-checkout
 
 `git-checkout` searches all local branches for keywords and checks out the matched
