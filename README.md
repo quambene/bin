@@ -7,10 +7,11 @@ Utility bash scripts for `cargo`, `git`, etc.
 - [cargo-clean](#cargo-clean)
   - [Usage](#usage)
   - [Examples](#examples)
+- [cargo-regression](#cargo-regression)
+  - [Usage](#usage)
 - [git-checkout](#git-checkout)
   - [Usage](#usage)
   - [Examples](#examples)
-- [cargo-regression-test](#cargo-regression-test)
 
 ## cargo-clean
 
@@ -43,6 +44,21 @@ cargo-clean ~/my_rust_projects --dry-run
 > cargo clean ~/my_rust_projects/rayon (dry run)
 > 3 targets removed (dry run)
 ```
+
+## cargo-regression
+
+`cargo-regression` runs all integration tests which are behind feature flag
+"integration-test" on two branches. Some of these tests may fail. It then compares
+the test results and determines if any regression did occur.
+
+### Usage
+
+Run the script in your local Rust project:
+
+``` bash
+./cargo-regression
+```
+
 
 ## git-checkout
 
@@ -82,16 +98,4 @@ git-checkout fix bug
 > Searching for pattern: *fix*bug*
 > Branch 'bug-386729-fix-terrible-bug' set up to track remote branch 'bug-386729-fix-terrible-bug' from 'origin'.
 > Switched to a new branch 'bug-386729-fix-terrible-bug'
-```
-
-## cargo-regression-test
-
-`cargo-regression-test` runs all integration tests which are behind feature flag
-"integration-test" on two branches. Some of these tests may fail. It then compares
-the test results and determines if any regression did occur.
-
-Run the script in your local project:
-
-``` bash
-./cargo-regression-test
 ```
