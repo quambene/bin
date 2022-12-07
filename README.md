@@ -1,4 +1,4 @@
-<!-- markdownlint-disable MD024 -->
+<!-- markdownlint-disable MD024 MD031 -->
 
 # bin
 
@@ -53,11 +53,19 @@ the test results and determines if any regression did occur.
 
 ### Usage
 
-Run the script in your local Rust project:
-
-``` bash
-./cargo-regression
-```
+1. Copy script to `~/bin`
+1. Add `~/bin` to PATH:
+    ``` bash
+    export PATH="$HOME/.cargo/bin:$PATH"
+    ```
+1. Make script executable:
+    ``` bash
+    chmod u+x cargo-regression
+    ```
+1. Run the script in your local Rust project:
+    ``` bash
+    cargo-regression
+    ```
 
 ## git-checkout
 
