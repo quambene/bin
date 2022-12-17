@@ -56,7 +56,7 @@ the test results and determines if any regression did occur.
 1. Copy script to `~/bin`
 1. Add `~/bin` to PATH:
     ``` bash
-    export PATH="$HOME/.cargo/bin:$PATH"
+    export PATH="$HOME/bin:$PATH"
     ```
 1. Make script executable:
     ``` bash
