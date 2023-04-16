@@ -1,0 +1,66 @@
+#!/bin/bash
+
+### Clean up Rust compilation targets recursively
+###
+### This script recursively searches for 'target' folders and 'Cargo.toml' files in a given directory.
+### target and .git subdirectories are excluded from the search.
+### For all found directories, 'cargo clean' is executed.
+###
+### A dry run of this script is accomplished by parameter --dry-run.
+###
+### Example (dry run): cargo-clean-recursive ~/my_rust_projects --dry-run
+### Example: cargo-clean-recursive ~/my_rust_projects
+
+# lastpipe needed because of https://www.shellcheck.net/wiki/SC2031
+shopt -s lastpipe
+
+for arg in "$@"
+do
+    if [[ $arg == "--dry-run" ]]; then
+        dry_run=1
+    else
+        dry_run=0
+    fi
+done
+
+dir=$1
+exclude_dir_1='.git'
+exclude_dir_2='target'
+max_recursions=3
+count_clean_ups=0
+
+if [[ $dir == "" || $dir == "--dry-run" ]]; then
+    printf "Missing directory: Provide directory as paramater\n"
+else
+    printf "Checking %s for Rust targets\n" "$dir"
+
+    find "$dir" -maxdepth $max_recursions -type d \
+        -not -path "*/$exclude_dir_1" \
+        -not -path "*/$exclude_dir_1/*" \
+        -not -path "*/$exclude_dir_2" \
+        -not -path "*/$exclude_dir_2/*" \
+        -print0 | while IFS= read -r -d $'\0' subdir; do
+            if [[ -d $subdir ]]; then
+                lines_cargo_toml=$( find "$subdir" -mindepth 1 -maxdepth 1 -type f -name 'Cargo.toml' | wc -l )
+                lines_target=$( find "$subdir" -mindepth 1 -maxdepth 1 -type d -name target | wc -l )
+                if (( lines_cargo_toml == 1 && lines_target == 1 )); then
+                    if [[ $dry_run == 1 ]]; then
+                        printf "cargo clean %s (dry run)\n" "$subdir"
+                        ((count_clean_ups++))
+                    elif [[ $dry_run == 0 ]]; then
+                        printf "cargo clean %s\n" "$subdir"
+                        cd "$subdir" && cargo clean && cd || exit
+                        ((count_clean_ups++))
+                    else
+                        printf "Unexpected error\n"
+                    fi
+                fi
+            fi
+    done
+
+    if [[ $dry_run == 1 ]]; then
+        printf "%s targets removed (dry run)\n\n" "$count_clean_ups"
+    else
+        printf "%s targets removed\n\n" "$count_clean_ups"
+    fi
+fi
