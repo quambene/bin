@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Create 9 equally sized panes in tmux
+
+# Start tmux session
+tmux new-session -d -s my-session
+
+# Split window into three horizontal panes
+tmux split-window -h
+tmux split-window -h
+
+# Move to the first pane and split it vertically into three panes
+tmux select-pane -t my-session.0
+tmux split-window -v
+tmux split-window -v
+
+# Move to the second pane and split it vertically into three panes
+tmux select-pane -t my-session.3
+tmux split-window -v
+tmux split-window -v
+
+# Move to the third pane and split it vertically into three panes
+tmux select-pane -t my-session.6
+tmux split-window -v
+tmux split-window -v
+
+# Set pane sizes
+tmux select-layout tiled
+
+# Attach to the tmux session
+tmux attach-session -t my-session
