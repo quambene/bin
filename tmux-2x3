@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# Create 2x3 matrix of equally sized panes in tmux
+
+session_name=$1
+
+# Start tmux session
+tmux new-session -d -s "$session_name"
+
+# Split window into three horizontal panes
+tmux split-window -h
+tmux split-window -h
+
+# Move to the first pane and split it vertically into two panes
+tmux select-pane -t "$session_name.0"
+tmux split-window -v
+
+# Move to the second pane and split it vertically into two panes
+tmux select-pane -t "$session_name.2"
+tmux split-window -v
+
+# Move to the third pane and split it vertically into two panes
+tmux select-pane -t "$session_name.4"
+tmux split-window -v
+
+# Set pane sizes
+# tmux select-layout tiled
+
+# Attach to the tmux session
+tmux attach-session -t "$session_name"
