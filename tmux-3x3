@@ -1,6 +1,14 @@
 #!/bin/bash
 
+################################################################
 # Create 9 equally sized panes in tmux
+################################################################
+
+# Check if session name was provided
+if [ -z "$1" ]; then
+    echo "Usage: $0 <session_name>"
+    exit 1
+fi
 
 session_name=$1
 
