@@ -28,4 +28,3 @@ tmux split-window -v
 
 # Attach to the tmux session
 tmux attach-session -t "$session_name"
-
