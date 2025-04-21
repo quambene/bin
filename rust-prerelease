@@ -1,0 +1,19 @@
+#!/bin/bash
+
+printf 'Running cargo fmt\n'
+cargo fmt
+
+printf 'Running cargo check\n'
+cargo check --all-targets --all-features
+
+printf 'Running cargo clippy\n'
+cargo clippy --all-targets --all-features
+
+printf 'Running cargo test\n'
+cargo test
+
+printf 'Running cargo udeps\n'
+cargo +nightly udeps
+
+printf 'Running cargo audit\n'
+cargo audit
